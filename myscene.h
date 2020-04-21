@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QGraphicsScene>
+#include <QGraphicsTextItem>
 #include "myitem.h"
 
 class myScene : public QGraphicsScene

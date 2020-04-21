@@ -12,6 +12,26 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     // 获取图元交互单例
     handler* hand = handler::getInstance();
+    // 更新单词数组
+    QStringList* string = new QStringList;
+    string->push_back("1");
+    string->push_back("2");
+    string->push_back("3");
+    string->push_back("4");
+    string->push_back("5");
+    string->push_back("6");
+    string->push_back("7");
+    string->push_back("8");
+    string->push_back("9");
+    string->push_back("10");
+    string->push_back("11");
+    string->push_back("12");
+    string->push_back("13");
+    string->push_back("14");
+    string->push_back("15");
+    string->push_back("16");
+
+    hand->UpdateWordList(string);
     // 绑定更新分数事件
     connect(hand, SIGNAL(UpdateScore(int)), this, SLOT(displayScore(int)));
 
