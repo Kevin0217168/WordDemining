@@ -1,2 +1,6 @@
-<!DOCTYPE RCC>
-<RCC version="1.0"/>
+<RCC>
+    <qresource prefix="/block">
+        <file>images/close_block.png</file>
+        <file>images/open_block.png</file>
+    </qresource>
+</RCC>
