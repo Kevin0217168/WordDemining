@@ -2,8 +2,12 @@
 #define HANDLER_H
 
 #include <QObject>
+class handler;
+
 #include <stdlib.h>
 #include <QStringList>
+#include <QList>
+#include "myitem.h"
 
 using namespace std;
 
@@ -26,6 +30,12 @@ public:
 
     // 单词列表
     QStringList* WordList;
+    // 是否出现打开一半的情况
+    bool incomplete = false;
+    // '不完整的'信号发送函数
+    void SendIncompleted();
+    // 未打开的图片列表
+    QList<myItem*>* closePictureList;
 private:
     // 卑微的构造函数
     explicit handler(QObject *parent = nullptr);
@@ -35,6 +45,8 @@ private:
 signals:
     // 更新分数信号
     void UpdateScore(int);
+    // 方块'不完整的'信号
+    void Incompleted();
 
 private:
     // 唯一的实例

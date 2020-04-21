@@ -22,12 +22,19 @@ public:
 private:
     Ui::MainWindow *ui;
     myScene *sc;
+    handler* hand;
 
     int score = 0;
 
 public slots:
+    // 刷新分数
     void displayScore(int);
+    // 重置分数
     void resetScore();
+    // 随机一个图片点击
+    void randomPicture();
+    // '不完整的'信号，弹窗提醒
+    void MessageIncompleted();
 
 protected:
     void closeEvent(QCloseEvent *event);

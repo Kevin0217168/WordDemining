@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     this->ui->graphicsView->setScene(this->sc);
 
     // 获取图元交互单例
-    handler* hand = handler::getInstance();
+    this->hand = handler::getInstance();
     // 更新单词数组
     QStringList* string = new QStringList;
     string->push_back("1");
@@ -31,12 +31,17 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     string->push_back("15");
     string->push_back("16");
 
-    hand->UpdateWordList(string);
+    this->hand->UpdateWordList(string);
     // 绑定更新分数事件
-    connect(hand, SIGNAL(UpdateScore(int)), this, SLOT(displayScore(int)));
+    connect(this->hand, SIGNAL(UpdateScore(int)), this, SLOT(displayScore(int)));
+    // 绑定‘不完整的’信号
+    connect(this->hand, SIGNAL(Incompleted()), this, SLOT(MessageIncompleted()));
 
     // 绑定清零分数按钮
     connect(ui->reset_btn, SIGNAL(clicked()), this, SLOT(resetScore()));
+
+    // 绑定'随机一个'按钮
+    connect(ui->random_btn, SIGNAL(clicked()), this, SLOT(randomPicture()));
 }
 
 MainWindow::~MainWindow()
@@ -60,5 +65,15 @@ void MainWindow::displayScore(int add){
 void MainWindow::resetScore(){
     this->score = 0;
     this->ui->lcdNumber->display(this->score);
+}
 
+void MainWindow::MessageIncompleted(){
+    QMessageBox::information(this, "注意", "注意哦，您还有未打开完全的方块\n请打开完全后再来哦!", "我知道啦!");
+}
+
+void MainWindow::randomPicture(){
+    int ret = this->sc->randomPicture();
+    if (ret){
+        QMessageBox::information(this, "已完成游戏", "您太棒了，界面上已经没有需要打开的卡片啦\n请点击重玩或游戏设置来自定义吧!", "知道啦");
+    }
 }

@@ -3,7 +3,7 @@
 // 构造函数
 handler::handler(QObject *parent) : QObject(parent)
 {
-
+    closePictureList = new QList<myItem*>;
 }
 
 // 析构函数
@@ -63,4 +63,9 @@ QString handler::randomWord(){
     this->WordList->removeAt(index);
     // 返回结果
     return result;
+}
+
+void handler::SendIncompleted(){
+    // 发送信号
+    emit Incompleted();
 }

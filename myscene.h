@@ -5,12 +5,16 @@
 #include <QGraphicsScene>
 #include <QGraphicsTextItem>
 #include "myitem.h"
+#include "handler.h"
 
 class myScene : public QGraphicsScene
 {
     Q_OBJECT
 public:
     explicit myScene(QWidget *parent = nullptr);
+    int randomPicture();
+
+    handler* hand;
 
 signals:
 
