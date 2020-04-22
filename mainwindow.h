@@ -8,6 +8,11 @@
 #include <QCloseEvent>
 #include <stdio.h>
 #include <gamesetting.h>
+#include <QStringList>
+#include <QList>
+#include <QFile>
+#include <QIODevice>
+#include <QTextStream>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -29,6 +34,7 @@ private:
     int score = 0;
     GameSetting* setting = NULL;
 
+    int readFile(QStringList* WordList);
 public slots:
     // 刷新分数
     void displayScore(int);

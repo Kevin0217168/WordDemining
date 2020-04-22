@@ -11,6 +11,7 @@ class handler;
 #include <cstdlib>
 #include "myitem.h"
 
+
 using namespace std;
 
 // 这是一个单例，用于在图元与主窗口交互更新分数

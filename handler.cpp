@@ -55,8 +55,11 @@ int handler::RandomNum(int min_num = 0, int max_num = 32767)
 
 // 随机一个单词
 QString handler::randomWord(){
+    qDebug() << "进入随机单词";
+    qDebug() << this->WordList->size();
     // 随机一个索引
     int index = this->RandomNum(0, this->WordList->size() - 1);
+    qDebug() << index;
     // 获取到该索引的数据
     QString result = this->WordList->at(index);
     // 反手炸掉指挥部，防止重复

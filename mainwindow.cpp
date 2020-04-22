@@ -6,34 +6,45 @@
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    // 更新单词数组
+//    QStringList* WordList = new QStringList;
+//    int ret = this->readFile(WordList);
+//    if (ret){
+//        return;
+//    }
+//    for (int i = 0; i < WordList->size(); i++){
+//        qDebug() << WordList->at(i);
+//    }
+//    qDebug() << "读取完毕" << endl;
+//    this->hand->UpdateWordList(WordList);
+//    this->hand->WordList = WordList;
 
     // 创建场景类
     this->sc = new myScene;
     // 添加场景
     this->ui->graphicsView->setScene(this->sc);
 
+    QStringList* WordList = new QStringList;
+    WordList->append("1");
+    WordList->append("2");
+    WordList->append("3");
+    WordList->append("4");
+    WordList->append("5");
+    WordList->append("6");
+    WordList->append("7");
+    WordList->append("8");
+    WordList->append("9");
+    WordList->append("10");
+    WordList->append("11");
+    WordList->append("12");
+    WordList->append("13");
+    WordList->append("14");
+    WordList->append("15");
+    WordList->append("16");
+    this->hand->UpdateWordList(WordList);
+
     // 获取图元交互单例
     this->hand = handler::getInstance();
-    // 更新单词数组
-    QStringList* string = new QStringList;
-    string->push_back("1");
-    string->push_back("2");
-    string->push_back("3");
-    string->push_back("4");
-    string->push_back("5");
-    string->push_back("6");
-    string->push_back("7");
-    string->push_back("8");
-    string->push_back("9");
-    string->push_back("10");
-    string->push_back("11");
-    string->push_back("12");
-    string->push_back("13");
-    string->push_back("14");
-    string->push_back("15");
-    string->push_back("16");
-
-    this->hand->UpdateWordList(string);
     // 绑定更新分数事件
     connect(this->hand, SIGNAL(UpdateScore(int)), this, SLOT(displayScore(int)));
     // 绑定‘不完整的’信号
@@ -97,9 +108,41 @@ void MainWindow::importWord(){
     system("notepad.exe Words.ini");
 }
 
-void MainWindow::gameSetting(){
-    if (this->setting == NULL){
-        this->setting = new GameSetting;
+// 读取单词文件
+int MainWindow::readFile(QStringList* WordList){
+    // 读取单词文件
+    QFile file("Words.ini");
+    // 判断是否打开失败
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
+        // 弹窗提醒
+        QMessageBox::critical(this, "出大问题!",
+             "找不到单词配置文件!\n请检查'Words.ini'文件是否被删除、移动、重命名\n请在安装目录下重新创建'Words.ini'文件以继续", "我知道啦!");
+        // 关闭窗口
+//        this->close();
+        return 1;
     }
-    this->setting->exec();
+
+    // 创建文本流对象
+    QTextStream in(&file);
+    // 读取单词
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+//        line.remove(QChar('\n'), Qt::CaseInsensitive);
+        WordList->append(line);
+    }
+
+    // 判断单词列表是否为空
+    if (WordList->size() == 1 && WordList->at(0) == ""){
+        QMessageBox::information(this, "注意", "单词列表内没有数据!\n请先在菜单栏选择'选项'->'导入单词'来输入单词哦\n注意一个单词占一行哦", "我知道啦!");
+        return 1;
+    }
+    return 0;
+}
+
+void MainWindow::gameSetting(){
+//    if (this->setting == NULL){
+//        this->setting = new GameSetting;
+//    }
+    GameSetting setting;
+    setting.exec();
 }
