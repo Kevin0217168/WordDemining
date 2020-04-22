@@ -10,7 +10,7 @@ myScene::myScene(QWidget *parent) : QGraphicsScene(parent)
             // 创建文本图元
             QGraphicsTextItem* Text = new QGraphicsTextItem;
             // 设置文本图元在图片图元内
-            Text->setPos(x*124 + 50, y*126 + 50);
+            Text->setPos(x*124 + 5, y*126 + 50);
             // 放置在场景中
             this->addItem(Text);
             // 设置层次为最高，使其一直在图元上方

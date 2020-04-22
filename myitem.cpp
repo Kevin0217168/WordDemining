@@ -12,7 +12,6 @@ void myItem::setPic(QString Path){
 }
 
 void myItem::mousePressEvent(QGraphicsSceneMouseEvent *event){
-    qDebug() << "鼠标事件";
     this->Clicked();
     event->ignore();
 }
@@ -27,12 +26,10 @@ void myItem::Clicked(){
             return;
         }
         this->setPic(":/block/images/open_block.png");
-        qDebug() << "图片设置成功";
         this->hand->addScore(1);
-        qDebug() << "分数添加成功";
         this->Text->setPlainText(this->hand->randomWord());
-        qDebug() << "单词添加成功";
-        this->Text->setDefaultTextColor(Qt::red);
+        this->Text->setDefaultTextColor(Qt::blue);
+        this->Text->setFont(QFont("consolas", 12));
         // 将自己设为未完全打开
         this->hand->incomplete = true;
     }

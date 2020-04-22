@@ -6,45 +6,27 @@
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    // 获取图元交互单例
+    this->hand = handler::getInstance();
+
     // 更新单词数组
-//    QStringList* WordList = new QStringList;
-//    int ret = this->readFile(WordList);
-//    if (ret){
-//        return;
-//    }
-//    for (int i = 0; i < WordList->size(); i++){
-//        qDebug() << WordList->at(i);
-//    }
-//    qDebug() << "读取完毕" << endl;
-//    this->hand->UpdateWordList(WordList);
-//    this->hand->WordList = WordList;
+    QStringList* WordList = new QStringList;
+    int ret = this->readFile(WordList);
+    if (ret){
+        return;
+    }
+    for (int i = 0; i < WordList->size(); i++){
+        qDebug() << WordList->at(i);
+    }
+    qDebug() << "读取完毕" << endl;
+    this->hand->UpdateWordList(WordList);
 
     // 创建场景类
     this->sc = new myScene;
     // 添加场景
     this->ui->graphicsView->setScene(this->sc);
 
-    QStringList* WordList = new QStringList;
-    WordList->append("1");
-    WordList->append("2");
-    WordList->append("3");
-    WordList->append("4");
-    WordList->append("5");
-    WordList->append("6");
-    WordList->append("7");
-    WordList->append("8");
-    WordList->append("9");
-    WordList->append("10");
-    WordList->append("11");
-    WordList->append("12");
-    WordList->append("13");
-    WordList->append("14");
-    WordList->append("15");
-    WordList->append("16");
-    this->hand->UpdateWordList(WordList);
-
-    // 获取图元交互单例
-    this->hand = handler::getInstance();
     // 绑定更新分数事件
     connect(this->hand, SIGNAL(UpdateScore(int)), this, SLOT(displayScore(int)));
     // 绑定‘不完整的’信号
