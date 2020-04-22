@@ -153,14 +153,26 @@
     <property name="title">
      <string>选项</string>
     </property>
-    <addaction name="actionset"/>
+    <addaction name="set_act"/>
+    <addaction name="daoru_act"/>
+   </widget>
+   <widget class="QMenu" name="about_act">
+    <property name="title">
+     <string>关于</string>
+    </property>
    </widget>
    <addaction name="menu123"/>
+   <addaction name="about_act"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionset">
+  <action name="set_act">
    <property name="text">
     <string>游戏设置</string>
+   </property>
+  </action>
+  <action name="daoru_act">
+   <property name="text">
+    <string>导入单词</string>
    </property>
   </action>
  </widget>

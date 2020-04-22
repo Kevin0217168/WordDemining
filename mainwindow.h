@@ -6,6 +6,8 @@
 #include <QMessageBox>
 #include "handler.h"
 #include <QCloseEvent>
+#include <stdio.h>
+#include <gamesetting.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -25,6 +27,7 @@ private:
     handler* hand;
 
     int score = 0;
+    GameSetting* setting = NULL;
 
 public slots:
     // 刷新分数
@@ -35,6 +38,10 @@ public slots:
     void randomPicture();
     // '不完整的'信号，弹窗提醒
     void MessageIncompleted();
+    // 导入单词设置
+    void importWord();
+    // 游戏设置
+    void gameSetting();
 
 protected:
     void closeEvent(QCloseEvent *event);

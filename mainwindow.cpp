@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QList>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -42,6 +44,19 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     // 绑定'随机一个'按钮
     connect(ui->random_btn, SIGNAL(clicked()), this, SLOT(randomPicture()));
+
+    // 将一数分为两数乘积算法
+//    QList<QList<int>*>* resultList = this->hand->SpiltNum(18, 2);
+//    for (int i = 0; i < resultList->size(); i++){
+//        qDebug() << resultList->at(i)->at(0) << "*" << resultList->at(i)->at(1) << endl;
+//    }
+//    delete resultList;
+    // 导入单词菜单
+    connect(this->ui->daoru_act, SIGNAL(triggered()), this, SLOT(importWord()));
+
+    // 游戏设置菜单
+    connect(this->ui->set_act, SIGNAL(triggered()), this, SLOT(gameSetting()));
+
 }
 
 MainWindow::~MainWindow()
@@ -76,4 +91,15 @@ void MainWindow::randomPicture(){
     if (ret){
         QMessageBox::information(this, "已完成游戏", "您太棒了，界面上已经没有需要打开的卡片啦\n请点击重玩或游戏设置来自定义吧!", "知道啦");
     }
+}
+
+void MainWindow::importWord(){
+    system("notepad.exe Words.ini");
+}
+
+void MainWindow::gameSetting(){
+    if (this->setting == NULL){
+        this->setting = new GameSetting;
+    }
+    this->setting->exec();
 }
