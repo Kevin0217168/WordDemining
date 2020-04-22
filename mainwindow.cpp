@@ -9,6 +9,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     // 获取图元交互单例
     this->hand = handler::getInstance();
+    this->hand->x = 4;
+    this->hand->y = 4;
 
     // 更新单词数组
     QStringList* WordList = new QStringList;
@@ -16,11 +18,12 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     if (ret){
         return;
     }
-    for (int i = 0; i < WordList->size(); i++){
-        qDebug() << WordList->at(i);
-    }
-    qDebug() << "读取完毕" << endl;
     this->hand->UpdateWordList(WordList);
+    QStringList* staticWordList = new QStringList;
+    for (int i = 0; i < WordList->size(); i++){
+        staticWordList->append(WordList->at(i));
+    }
+    this->hand->staticWordList = staticWordList;
 
     // 创建场景类
     this->sc = new myScene;
@@ -38,12 +41,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     // 绑定'随机一个'按钮
     connect(ui->random_btn, SIGNAL(clicked()), this, SLOT(randomPicture()));
 
-    // 将一数分为两数乘积算法
-//    QList<QList<int>*>* resultList = this->hand->SpiltNum(18, 2);
-//    for (int i = 0; i < resultList->size(); i++){
-//        qDebug() << resultList->at(i)->at(0) << "*" << resultList->at(i)->at(1) << endl;
-//    }
-//    delete resultList;
     // 导入单词菜单
     connect(this->ui->daoru_act, SIGNAL(triggered()), this, SLOT(importWord()));
 
@@ -99,32 +96,33 @@ int MainWindow::readFile(QStringList* WordList){
         // 弹窗提醒
         QMessageBox::critical(this, "出大问题!",
              "找不到单词配置文件!\n请检查'Words.ini'文件是否被删除、移动、重命名\n请在安装目录下重新创建'Words.ini'文件以继续", "我知道啦!");
-        // 关闭窗口
-//        this->close();
         return 1;
     }
 
     // 创建文本流对象
     QTextStream in(&file);
+    // 设置编码
+    in.setCodec("utf-8");
     // 读取单词
     while (!in.atEnd()) {
         QString line = in.readLine();
-//        line.remove(QChar('\n'), Qt::CaseInsensitive);
+        line.replace("|", "\n");
         WordList->append(line);
     }
 
     // 判断单词列表是否为空
     if (WordList->size() == 1 && WordList->at(0) == ""){
         QMessageBox::information(this, "注意", "单词列表内没有数据!\n请先在菜单栏选择'选项'->'导入单词'来输入单词哦\n注意一个单词占一行哦", "我知道啦!");
-        return 1;
+        return 2;
     }
     return 0;
 }
 
 void MainWindow::gameSetting(){
-//    if (this->setting == NULL){
-//        this->setting = new GameSetting;
-//    }
     GameSetting setting;
     setting.exec();
+}
+
+void MainWindow::restart(){
+
 }

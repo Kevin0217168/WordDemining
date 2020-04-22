@@ -9,6 +9,9 @@
 #include <QFile>
 #include <QIODevice>
 #include <QTextStream>
+#include <QStringListModel>
+#include "handler.h"
+#include <QDebug>
 
 namespace Ui {
 class GameSetting;
@@ -24,6 +27,11 @@ public:
 
 private:
     Ui::GameSetting *ui;
+    handler* hand;
+
+    void init();
+    void initListView();
+
 
 public slots:
     void ok_btn_clicked();

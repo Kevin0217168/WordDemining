@@ -9,6 +9,7 @@ class handler;
 #include <QList>
 #include <string>
 #include <cstdlib>
+#include <ctime>
 #include "myitem.h"
 
 
@@ -31,8 +32,13 @@ public:
     // 在单词列表中随机一个
     QString randomWord();
 
+    // 单词宽高
+    int x, y;
+
     // 单词列表
     QStringList* WordList;
+    // 静态单词列表
+    QStringList* staticWordList;
     // 是否出现打开一半的情况
     bool incomplete = false;
     // '不完整的'信号发送函数

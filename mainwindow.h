@@ -35,6 +35,7 @@ private:
     GameSetting* setting = NULL;
 
     int readFile(QStringList* WordList);
+    void restart();
 public slots:
     // 刷新分数
     void displayScore(int);

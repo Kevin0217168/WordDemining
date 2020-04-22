@@ -6,6 +6,7 @@
 #include <QGraphicsTextItem>
 #include "myitem.h"
 #include "handler.h"
+#include <QList>
 
 class myScene : public QGraphicsScene
 {
@@ -21,7 +22,7 @@ signals:
 public slots:
 
 private:
-    myItem * item[4][4];
+    QList<QList<myItem*>*>* item;
 };
 
 #endif // MYSCENE_H

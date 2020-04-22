@@ -153,13 +153,13 @@
        </layout>
       </item>
       <item>
-       <widget class="QGroupBox" name="groupBox">
+       <widget class="QGroupBox" name="fenshu_gb">
         <property name="title">
          <string>分数设置</string>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_2">
+          <layout class="QVBoxLayout" name="fen_layout">
            <item>
             <widget class="QLabel" name="label_7">
              <property name="text">
@@ -185,7 +185,7 @@
           </layout>
          </item>
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout">
+          <layout class="QVBoxLayout" name="shu_layout">
            <item>
             <widget class="QLabel" name="label_5">
              <property name="text">

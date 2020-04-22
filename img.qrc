@@ -2,5 +2,6 @@
     <qresource prefix="/block">
         <file>images/close_block.png</file>
         <file>images/open_block.png</file>
+        <file>images/boom_block.png</file>
     </qresource>
 </RCC>
