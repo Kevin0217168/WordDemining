@@ -10,9 +10,7 @@
 #include <gamesetting.h>
 #include <QStringList>
 #include <QList>
-#include <QFile>
-#include <QIODevice>
-#include <QTextStream>
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -34,8 +32,9 @@ private:
     int score = 0;
     GameSetting* setting = NULL;
 
-    int readFile(QStringList* WordList);
-    void restart();
+    int readSettingFile(QStringList* WordList, int* lei, QList<int>* buju, QList<QList<int>*>* fen);
+    void Init();
+
 public slots:
     // 刷新分数
     void displayScore(int);
@@ -49,6 +48,8 @@ public slots:
     void importWord();
     // 游戏设置
     void gameSetting();
+    // 重玩
+    void restart();
 
 protected:
     void closeEvent(QCloseEvent *event);

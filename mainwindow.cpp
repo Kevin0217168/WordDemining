@@ -9,26 +9,9 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     // 获取图元交互单例
     this->hand = handler::getInstance();
-    this->hand->x = 4;
-    this->hand->y = 4;
 
-    // 更新单词数组
-    QStringList* WordList = new QStringList;
-    int ret = this->readFile(WordList);
-    if (ret){
-        return;
-    }
-    this->hand->UpdateWordList(WordList);
-    QStringList* staticWordList = new QStringList;
-    for (int i = 0; i < WordList->size(); i++){
-        staticWordList->append(WordList->at(i));
-    }
-    this->hand->staticWordList = staticWordList;
-
-    // 创建场景类
-    this->sc = new myScene;
-    // 添加场景
-    this->ui->graphicsView->setScene(this->sc);
+    // 初始化
+    this->Init();
 
     // 绑定更新分数事件
     connect(this->hand, SIGNAL(UpdateScore(int)), this, SLOT(displayScore(int)));
@@ -47,11 +30,62 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     // 游戏设置菜单
     connect(this->ui->set_act, SIGNAL(triggered()), this, SLOT(gameSetting()));
 
+    // 绑定重玩按钮
+    connect(this->ui->replay_btn, SIGNAL(clicked()), this, SLOT(restart()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::Init(){
+    // 读取配置文件
+    QStringList* WordList = new QStringList;
+    int* lei = new int;
+    QList<int>* buju = new QList<int>;
+    QList<QList<int>*>* fen = new QList<QList<int>*>;
+
+    int ret = this->readSettingFile(WordList, lei, buju, fen);
+    if (ret){
+        return;
+    }
+    // 更新单词列表
+    this->hand->UpdateWordList(WordList);
+    // 复制一份静态单词列表
+    QStringList* staticWordList = new QStringList;
+    for (int i = 0; i < WordList->size(); i++){
+        staticWordList->append(WordList->at(i));
+    }
+    this->hand->staticWordList = staticWordList;
+
+    // 更新矩形布局
+    this->hand->x = buju->at(0);
+    this->hand->y = buju->at(1);
+    delete buju;
+
+    // 创建打开后的列表
+    QStringList* opened_block = new QStringList;
+    for (int i = 0; i < *lei; i++){
+        opened_block->append("Boom");
+    }
+    for (int i = 0; i < fen->size(); i++){
+        for (int x = 0; x < fen->at(i)->at(1); x++){
+            opened_block->append(QString::number(fen->at(i)->at(0)));
+        }
+    }
+    int shengyu = this->hand->x * this->hand->y - opened_block->size();
+    for (int i = 0; i < shengyu; i++){
+        opened_block->append("wu");
+    }
+    this->hand->opened_block = opened_block;
+    delete fen;
+    delete lei;
+
+    // 创建场景类
+    this->sc = new myScene;
+    // 添加场景
+    this->ui->graphicsView->setScene(this->sc);
 }
 
 
@@ -88,14 +122,14 @@ void MainWindow::importWord(){
 }
 
 // 读取单词文件
-int MainWindow::readFile(QStringList* WordList){
+int MainWindow::readSettingFile(QStringList* WordList, int* lei, QList<int>* buju, QList<QList<int>*>* fen){
     // 读取单词文件
-    QFile file("Words.ini");
+    QFile file("setting.ini");
     // 判断是否打开失败
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
         // 弹窗提醒
         QMessageBox::critical(this, "出大问题!",
-             "找不到单词配置文件!\n请检查'Words.ini'文件是否被删除、移动、重命名\n请在安装目录下重新创建'Words.ini'文件以继续", "我知道啦!");
+             "找不到单词配置文件!\n请检查'setting.ini'文件是否被删除、移动、重命名\n请在安装目录下重新创建'setting.ini'文件以继续", "我知道啦!");
         return 1;
     }
 
@@ -104,10 +138,12 @@ int MainWindow::readFile(QStringList* WordList){
     // 设置编码
     in.setCodec("utf-8");
     // 读取单词
-    while (!in.atEnd()) {
-        QString line = in.readLine();
+    QString line;
+    line = in.readLine();
+    while (line != "======") {
         line.replace("|", "\n");
         WordList->append(line);
+        line = in.readLine();
     }
 
     // 判断单词列表是否为空
@@ -115,14 +151,48 @@ int MainWindow::readFile(QStringList* WordList){
         QMessageBox::information(this, "注意", "单词列表内没有数据!\n请先在菜单栏选择'选项'->'导入单词'来输入单词哦\n注意一个单词占一行哦", "我知道啦!");
         return 2;
     }
+
+    // 读取矩形组合(连读两行)
+    buju->append(in.readLine().toInt());
+    buju->append(in.readLine().toInt());
+    // 读取雷数
+    *lei = in.readLine().toInt();
+
+    // 读取加分项
+    while (!in.atEnd()) {
+        QStringList list = in.readLine().split("|");
+        QList<int>* i_list = new QList<int>;
+        i_list->append(list.at(0).toInt());
+        i_list->append(list.at(1).toInt());
+        fen->append(i_list);
+    }
+
+    file.close();
     return 0;
 }
 
 void MainWindow::gameSetting(){
     GameSetting setting;
+    connect(&setting, SIGNAL(Restart()), this, SLOT(restart()));
     setting.exec();
+    disconnect(&setting, SIGNAL(Restart()), this, SLOT(restart()));
 }
 
 void MainWindow::restart(){
+    // 垃圾清理带师
+    delete this->hand->WordList;
+    delete this->hand->staticWordList;
+    delete this->hand->opened_block;
+    delete this->sc;
 
+    // 数据恢复带师
+    this->hand->incomplete = false;
+    this->hand->closePictureList->clear();
+    this->score = 0;
+
+    // 显示刷新带师
+    this->ui->lcdNumber->display(this->score);
+
+    // 调用构造函数重新开始
+    this->Init();
 }

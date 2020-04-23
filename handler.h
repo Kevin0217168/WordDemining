@@ -10,6 +10,9 @@ class handler;
 #include <string>
 #include <cstdlib>
 #include <ctime>
+#include <QFile>
+#include <QIODevice>
+#include <QTextStream>
 #include "myitem.h"
 
 
@@ -34,6 +37,8 @@ public:
 
     // 单词宽高
     int x, y;
+    // 单词中的雷，加分等
+    QStringList* opened_block;
 
     // 单词列表
     QStringList* WordList;
@@ -47,6 +52,12 @@ public:
     QList<myItem*>* closePictureList;
 
     QList<QList<int>*>* SpiltNum(int Num, int geshu);
+
+    // 打开文件
+    int readFile(QStringList* WordList);
+
+    // 随机一个情况
+    QString randomQingKuang();
 private:
     // 卑微的构造函数
     explicit handler(QObject *parent = nullptr);

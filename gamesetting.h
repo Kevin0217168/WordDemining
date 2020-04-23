@@ -32,6 +32,8 @@ private:
     void init();
     void initListView();
 
+signals:
+    void Restart();
 
 public slots:
     void ok_btn_clicked();

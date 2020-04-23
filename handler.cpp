@@ -137,3 +137,44 @@ QList<QList<int>*>* handler::SpiltNum(int Num, int geshu)
     }
     return this->resultList;
 }
+
+// 读取单词文件
+int handler::readFile(QStringList* WordList){
+    // 读取单词文件
+    QFile file("Words.ini");
+    // 判断是否打开失败
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
+        file.close();
+        return 1;
+    }
+
+    // 创建文本流对象
+    QTextStream in(&file);
+    // 设置编码
+    in.setCodec("utf-8");
+    // 读取单词
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        line.replace("|", "\n");
+        WordList->append(line);
+    }
+
+    // 判断单词列表是否为空
+    if (WordList->size() == 1 && WordList->at(0) == ""){
+        file.close();
+        return 2;
+    }
+    file.close();
+    return 0;
+}
+
+QString handler::randomQingKuang(){
+    // 随机一个索引
+    int index = this->RandomNum(0, this->opened_block->size() - 1);
+    // 获取到该索引的数据
+    QString result = this->opened_block->at(index);
+    // 反手炸掉指挥部，防止重复
+    this->opened_block->removeAt(index);
+    // 返回结果
+    return result;
+}

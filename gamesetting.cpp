@@ -7,7 +7,30 @@ GameSetting::GameSetting(QWidget *parent) :QDialog(parent), ui(new Ui::GameSetti
 
     this->hand = handler::getInstance();
 
+    // 重新读取单词文件
+    QStringList* WordList = new QStringList;
+    int ret = this->hand->readFile(WordList);
+    // 检查是否读取失败
+    if (ret){
+        if (ret == 1){
+            QMessageBox::critical(this, "出大问题!",
+                 "找不到单词配置文件!\n请检查'Words.ini'文件是否被删除、移动、重命名\n请在安装目录下重新创建'Words.ini'文件以继续", "我知道啦!");
+
+        }else if (ret == 2){
+            QMessageBox::information(this, "注意", "单词列表内没有数据!\n请先在菜单栏选择'选项'->'导入单词'来输入单词哦\n注意一个单词占一行哦", "我知道啦!");
+        }
+        delete WordList;
+        this->close();
+    }
+    // 释放旧空间
+    delete this->hand->staticWordList;
+    // 添加新数据
+    this->hand->staticWordList = WordList;
+
+
+    // 初始化单词列表显示
     this->initListView();
+    // 初始化其他显示
     this->init();
 
     // 确定按钮事件绑定
@@ -83,11 +106,51 @@ void GameSetting::ok_btn_clicked(){
         queren += "\n";
     }
 
-    QMessageBox::information(this, "确认", "最后确定一下哦，将保存设置啦!\n矩形组合：宽:" + zuhe.at(0) + " 高:" + zuhe.at(1) +
+    int ret = QMessageBox::information(this, "确认", "最后确定一下哦，将保存设置啦!\n矩形组合：宽:" + zuhe.at(0) + " 高:" + zuhe.at(1) +
         "\n共有雷数：" + lei + "\n加分项：\n" + queren, "我再确认一下", "就是它了!");
+    if (!ret){
+        return;
+    }
+
+    // 写入配置文件
+    QFile file("setting.ini");
+    // 打开文件
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        QMessageBox::critical(this, "出大问题!",
+             "找不到单词配置文件!\n请检查'setting.ini'文件是否被删除、移动、重命名\n请在安装目录下重新创建'setting.ini'文件以继续", "我知道啦!");
+        delete jiafen;
+        delete list;
+        this->close();
+    }
+
+    QTextStream in(&file);
+    // 设置编码
+    in.setCodec("utf-8");
+
+    // 添加单词
+    for (int i = 0; i < this->hand->staticWordList->size(); i++){
+        QString word = this->hand->staticWordList->at(i);
+        word.replace("\n", "|");
+        in << word << endl;
+    }
+    in << "======" << endl;
+
+    // 添加长宽
+    in << zuhe.at(0) << endl << zuhe.at(1) << endl;
+    // 添加雷数
+    in << lei << endl;
+
+    // 添加加分项
+    for (int i = 0; i < jiafen->size(); i++){
+        in << jiafen->at(i)->at(0) << "|" << jiafen->at(i)->at(1) << endl;
+    }
+    file.close();
 
     delete jiafen;
     delete list;
+    // 发送信号，告诉主窗口重新读取配置文件
+    emit Restart();
+    this->close();
 }
 
 void GameSetting::cancel_btn_clicked(){
